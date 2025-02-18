@@ -1,0 +1,18 @@
+# Ignore source files (TypeScript source code)
+src/
+
+# Ignore unnecessary config files
+.babelrc
+.gitignore
+tsconfig.json
+jest.config.js
+
+# Ignore dependencies and build artifacts
+node_modules/
+dist/ # Only if you're not using this for distribution
+
+# Ignore test-related files
+__tests__/
+
+# Optional: Ignore lock files
+package-lock.json

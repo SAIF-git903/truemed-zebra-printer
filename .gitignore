@@ -1,7 +1,34 @@
-/node_modules
+# Ignore dependencies
+node_modules/
 
-/lib
+# Ignore compiled output
+lib/
+dist/
 
+# Ignore lock files (optional, but useful for libraries)
+package-lock.json
+yarn.lock
+
+# Ignore logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Ignore TypeScript build files
+*.tsbuildinfo
+
+# Ignore IDE/editor-specific files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Ignore environment files (if applicable)
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Ignore Jest coverage and test output
+coverage/
