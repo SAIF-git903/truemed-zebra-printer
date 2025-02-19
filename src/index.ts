@@ -75,7 +75,10 @@ export default class ZebraBrowserPrintWrapper {
       return device;
     } catch (error) {
       // Ensure we catch the format error specifically and throw with the right message
-      if (error.message === "Invalid printer data format") {
+      if (
+        error instanceof Error &&
+        error.message === "Invalid printer data format"
+      ) {
         throw new Error("Invalid printer data format");
       }
       throw new Error("No default printer found"); // Keep the default error message for other issues
@@ -94,7 +97,7 @@ export default class ZebraBrowserPrintWrapper {
   async checkPrinterStatus() {
     await this.write("~HQES");
     const result = await this.read();
-  
+
     const errors: string[] = [];
     const statusCodes = {
       "1": "Paper Out",
@@ -104,25 +107,21 @@ export default class ZebraBrowserPrintWrapper {
       "5": "Paper Jam",
       "6": "General Error",
     };
-  
+
     // Strip non-numeric parts (like 'Status:' or other extraneous text)
     const cleanedResult = result.replace(/[^\d\s]/g, "").trim();
-    console.log("Cleaned Result:", cleanedResult); // Debugging
-  
+
     // Split the result by spaces to match each status code
     const statusArray = cleanedResult.split(" ");
-    console.log("Status Array:", statusArray); // Debugging
-  
+
     // Loop through each status code and check if any errors exist
-    statusArray.forEach((status) => {
-      console.log("Checking Status:", status); // Debugging
+    statusArray.forEach((status: string) => {
       // Check for error status codes (from "1" to "5")
-      if (statusCodes[status]) {
-        errors.push(statusCodes[status]);
+      if (statusCodes[status as keyof typeof statusCodes]) {
+        errors.push(statusCodes[status as keyof typeof statusCodes]);
       }
     });
-  
-    console.log("Errors:", errors); // Debugging
+
     return { isReadyToPrint: errors.length === 0, errors };
   }
 
