@@ -110,4 +110,4 @@ Prints a label using Zebra label formatting.
 MIT License
 
 ## Author
-Saif Ali
+**[Saif Ali](https://github.com/SAIF-git903)**

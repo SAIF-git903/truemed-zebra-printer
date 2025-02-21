@@ -97,7 +97,7 @@ export default class ZebraBrowserPrintWrapper {
   async checkPrinterStatus() {
     await this.write("~HQES");
     const result = await this.read();
-
+    
     const errors: string[] = [];
     const statusCodes = {
       "1": "Paper Out",
@@ -107,22 +107,45 @@ export default class ZebraBrowserPrintWrapper {
       "5": "Paper Jam",
       "6": "General Error",
     };
-
+  
     // Strip non-numeric parts (like 'Status:' or other extraneous text)
     const cleanedResult = result.replace(/[^\d\s]/g, "").trim();
-
+  
     // Split the result by spaces to match each status code
     const statusArray = cleanedResult.split(" ");
-
+  
     // Loop through each status code and check if any errors exist
     statusArray.forEach((status: string) => {
-      // Check for error status codes (from "1" to "5")
       if (statusCodes[status as keyof typeof statusCodes]) {
         errors.push(statusCodes[status as keyof typeof statusCodes]);
       }
     });
-
+  
     return { isReadyToPrint: errors.length === 0, errors };
+  }
+  
+  
+
+  async checkConnection() {
+    if (!this.device || !this.device.name) {
+      return { isConnected: false, message: "No printer connected." };
+    }
+
+    try {
+      await this.write("~HQES");
+      const result = await this.read();
+
+      if (!result || result.includes("ERROR")) {
+        return { isConnected: false, message: "Printer is not responding" };
+      }
+
+      return { isConnected: true, message: "Printer is connected" };
+    } catch (error) {
+      return {
+        isConnected: false,
+        message: "Connection error: " + (error as Error).message,
+      };
+    }
   }
 
   async write(data: string) {

@@ -165,3 +165,54 @@ describe("ZebraBrowserPrintWrapper", () => {
     );
   });
 });
+
+describe("ZebraBrowserPrintWrapper - checkConnection", () => {
+  let wrapper: ZebraBrowserPrintWrapper;
+
+  beforeEach(() => {
+    wrapper = new ZebraBrowserPrintWrapper();
+    wrapper.device = { name: "TestPrinter" } as any; // Mock a printer
+  });
+
+  it("should return isConnected: true when printer responds correctly", async () => {
+    jest.spyOn(wrapper, "write").mockResolvedValue(undefined); // Mock successful write
+    jest.spyOn(wrapper, "read").mockResolvedValue("OK"); // Mock a valid response
+
+    const result = await wrapper.checkConnection();
+    expect(result).toEqual({
+      isConnected: true,
+      message: "Printer is connected",
+    });
+  });
+
+  it("should return isConnected: false when printer is not responding", async () => {
+    jest.spyOn(wrapper, "write").mockResolvedValue(undefined);
+    jest.spyOn(wrapper, "read").mockResolvedValue(""); // Empty response
+
+    const result = await wrapper.checkConnection();
+    expect(result).toEqual({
+      isConnected: false,
+      message: "Printer is not responding",
+    });
+  });
+
+  it("should return isConnected: false when no printer is selected", async () => {
+    wrapper.device = {} as any; // No printer
+
+    const result = await wrapper.checkConnection();
+    expect(result).toEqual({
+      isConnected: false,
+      message: "No printer connected.",
+    });
+  });
+
+  it("should return isConnected: false when an error occurs", async () => {
+    jest.spyOn(wrapper, "write").mockRejectedValue(new Error("Network error"));
+
+    const result = await wrapper.checkConnection();
+    expect(result).toEqual({
+      isConnected: false,
+      message: "Connection error: Network error",
+    });
+  });
+});
