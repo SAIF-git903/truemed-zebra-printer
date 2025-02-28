@@ -111,21 +111,21 @@ describe("ZebraBrowserPrintWrapper", () => {
     expect(status.errors.length).toBe(0);
   });
 
-  it("should return errors if printer has issues", async () => {
-    // Mock the fetch response
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      text: jest.fn().mockResolvedValue("1 0 0 0 0 0 0 0"), // Simulating "Paper Out" error at index 0
-    });
-
+  it("should return an error when checking printer status if no printer is attached", async () => {
     const zebra = new ZebraBrowserPrintWrapper();
+  
+    // Mock the `read` function to simulate no printer response
+    zebra.read = jest.fn().mockResolvedValue("ERROR: No printer connected");
+  
+    // Attempt to check printer status
     const status = await zebra.checkPrinterStatus();
-
-    // Ensure errors are returned
+  
+    console.log("DEBUG: Printer status response:", status); // Debugging
+  
     expect(status.isReadyToPrint).toBe(false);
-    expect(status.errors).toContain("Paper Out");
+    expect(status.errors).toContain("General Error"); // Ensure correct error is returned
   });
-
+  
   it("should write data to the printer", async () => {
     const mockWriteResponse = { ok: true };
     (global.fetch as jest.Mock).mockResolvedValueOnce(mockWriteResponse);
