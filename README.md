@@ -1,11 +1,11 @@
-# truemed-zebra-printer
+# zebra-browser-print
 
 A JavaScript wrapper for interacting with Zebra printers using the Browser Print API. This package provides functionalities to retrieve available printers, set a default printer, check printer status, and send print commands.
 
 ## Installation
 
 ```sh
-npm install truemed-zebra-printer
+npm install zebra-browser-print
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ npm install truemed-zebra-printer
 ### Import and Initialize
 
 ```typescript
-import ZebraBrowserPrintWrapper from "truemed-zebra-printer";
+import ZebraBrowserPrintWrapper from "zebra-browser-print";
 
 const printer = new ZebraBrowserPrintWrapper();
 ```
